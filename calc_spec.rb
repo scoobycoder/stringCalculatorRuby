@@ -11,7 +11,11 @@ describe 'Be a Calculator' do
   end
 
   it 'Sum should return 0 when nothing is passed to it' do
-    expect(@calc.sum()).to eq(0)
+    expect(@calc.sum).to eq(0)
+  end
+
+  it 'Sum should add two numbers' do
+    expect(@calc.sum([1,1])).to eq(2)
   end
 
 end
@@ -19,6 +23,6 @@ end
 class StringCalc
   def sum(numbers=[0])
     filtered_numbers = numbers.select{|number| number.is_a?(Fixnum)}
-    filtered_numbers.first
+    filtered_numbers.inject(0, :+)
   end
 end
