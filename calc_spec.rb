@@ -22,6 +22,10 @@ describe 'Be a Calculator' do
     expect(@calc.sum('1\n2,3')).to eq(6)
   end
 
+  it 'Sum should allow for any delimiter that is passed at beginning of string' do
+    expect(@calc.sum('//;\n1;2')).to eq(3)
+  end
+
 end
 
 class StringCalc
@@ -41,6 +45,9 @@ class StringCalc
   end
 
   def split_newline(numbers)
+    delimiter_location = numbers.index('//')
+    delimiter = numbers[delimiter_location+2] unless delimiter_location == nil
+    return numbers.split(delimiter) if delimiter_location != nil
     numbers.split('\n')
   end
 end
