@@ -43,11 +43,12 @@ class StringCalc
   end
 
   def raise_exception_on_negative_numbers(new_numbers)
-    raise 'No Negative Numbers Allowed' if includes_negative_numbers?(new_numbers)
+    negatives = select_negative_numbers(new_numbers)
+    raise "No Negative Numbers Allowed: #{negatives.to_s}" if negatives.length > 0
   end
 
-  def includes_negative_numbers?(new_numbers)
-    (new_numbers.select { |number| number < 0 }).length > 0
+  def select_negative_numbers(new_numbers)
+    new_numbers.select { |number| number < 0 }
   end
 
   def split_with_delimiter(numbers)
