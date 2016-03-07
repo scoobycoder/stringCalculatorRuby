@@ -7,7 +7,7 @@ describe 'Be a Calculator' do
   end
 
   it 'Sum should eat any character that is not a numbers' do
-    expect(@calc.sum('a,1')).to eq(1)
+    expect(@calc.sum('//,a,1')).to eq(1)
   end
 
   it 'Sum should return 0 when nothing is passed to it' do
@@ -15,11 +15,7 @@ describe 'Be a Calculator' do
   end
 
   it 'Sum should add two numbers' do
-    expect(@calc.sum('1,1')).to eq(2)
-  end
-
-  it 'Sum should allow for new line characters instead of commas' do
-    expect(@calc.sum('1\n2,3')).to eq(6)
+    expect(@calc.sum('//,1,1')).to eq(2)
   end
 
   it 'Sum should allow for any delimiter that is passed at beginning of string' do
@@ -37,17 +33,23 @@ class StringCalc
   private
 
   def convert_to_integers(numbers)
-    create_numbers_array(numbers).collect { |number| number.to_i }
+    split_with_delimiter(numbers).collect { |number| number.to_i }
   end
 
-  def create_numbers_array(numbers)
-    split_newline(numbers).collect { |number| number.split(',') }.flatten!
+  def split_with_delimiter(numbers)
+    new_numbers = remove_new_line(numbers)
+    delimiter = find_delimiter(new_numbers)
+    return new_numbers.split(delimiter)
   end
 
-  def split_newline(numbers)
-    delimiter_location = numbers.index('//')
-    delimiter = numbers[delimiter_location+2] unless delimiter_location == nil
-    return numbers.split(delimiter) if delimiter_location != nil
-    numbers.split('\n')
+  def find_delimiter(new_numbers)
+    delimiter_offset = 2
+    delimiter_location = new_numbers.index('//') + delimiter_offset
+    delimiter = new_numbers[delimiter_location]
+    return delimiter
+  end
+
+  def remove_new_line(numbers)
+    numbers.gsub('\n', '')
   end
 end
