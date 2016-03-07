@@ -22,6 +22,10 @@ describe 'Be a Calculator' do
     expect(@calc.sum('//;\n1;2')).to eq(3)
   end
 
+  it 'Sum should throw and exception when negative numbers are passed' do
+    expect { @calc.sum('//;2;-1') }.to raise_error
+  end
+
 end
 
 class StringCalc
@@ -33,7 +37,17 @@ class StringCalc
   private
 
   def convert_to_integers(numbers)
-    split_with_delimiter(numbers).collect { |number| number.to_i }
+    new_numbers = split_with_delimiter(numbers).collect { |number| number.to_i }
+    raise_exception_on_negative_numbers(new_numbers)
+    new_numbers
+  end
+
+  def raise_exception_on_negative_numbers(new_numbers)
+    raise 'No Negative Numbers Allowed' if includes_negative_numbers?(new_numbers)
+  end
+
+  def includes_negative_numbers?(new_numbers)
+    (new_numbers.select { |number| number < 0 }).length > 0
   end
 
   def split_with_delimiter(numbers)
