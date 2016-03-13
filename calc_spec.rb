@@ -31,4 +31,8 @@ describe 'Be a Calculator' do
     expect(@calc.sum('//;1000;2;1001')).to eq(1002)
   end
 
+  it 'Sum should allow for long delimiters' do
+    expect ( @calc.sum('//[***]\n1***2***3')).to eq(6)
+  end
+
 end
