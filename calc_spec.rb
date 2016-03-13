@@ -23,7 +23,7 @@ describe 'Be a Calculator' do
   end
 
   it 'Sum should throw and exception when negative numbers are passed' do
-    expect { @calc.sum('//;2;-1') }.to raise_error
+    expect { @calc.sum('//;2;-1;-5') }.to raise_error
   end
 
 end
@@ -44,7 +44,12 @@ class StringCalc
 
   def raise_exception_on_negative_numbers(new_numbers)
     negatives = select_negative_numbers(new_numbers)
+    print_negatives(negatives)
     raise "No Negative Numbers Allowed: #{negatives.to_s}" if negatives.length > 0
+  end
+
+  def print_negatives(negatives)
+    puts "Negative numbers: #{negatives.to_s}" if negatives.length > 0
   end
 
   def select_negative_numbers(new_numbers)
