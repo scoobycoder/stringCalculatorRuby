@@ -26,6 +26,10 @@ describe 'Be a Calculator' do
     expect { @calc.sum('//;2;-1;-5') }.to raise_error
   end
 
+  it 'Sum should ignore numbers larger than 1000 when they are passed' do
+    expect(@calc.sum('//;1000;2;1001')).to eq(1002)
+  end
+
 end
 
 class StringCalc
@@ -38,8 +42,16 @@ class StringCalc
 
   def convert_to_integers(numbers)
     new_numbers = split_with_delimiter(numbers).collect { |number| number.to_i }
+    handle_special_numbers(new_numbers)
+  end
+
+  def handle_special_numbers(new_numbers)
     raise_exception_on_negative_numbers(new_numbers)
-    new_numbers
+    filter_out_numbers_larger_than_1000(new_numbers)
+  end
+
+  def filter_out_numbers_larger_than_1000(new_numbers)
+    new_numbers.select { |number| number < 1001}
   end
 
   def raise_exception_on_negative_numbers(new_numbers)
