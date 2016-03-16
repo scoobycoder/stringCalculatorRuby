@@ -7,7 +7,7 @@ class StringCalc
   private
 
   def convert_to_integers(numbers)
-    new_numbers = split_with_delimiter(numbers).collect { |number| number.to_i }
+    new_numbers = numbers_to_array(numbers).collect { |number| number.to_i }
     handle_special_numbers(new_numbers)
   end
 
@@ -34,15 +34,45 @@ class StringCalc
     new_numbers.select { |number| number < 0 }
   end
 
-  def split_with_delimiter(numbers)
+  def numbers_to_array(numbers)
     new_numbers = remove_new_line(numbers)
-    delimiter = find_delimiter(new_numbers)
+    delimiters = find_delimiters(new_numbers)
     new_numbers = remove_delimiter_special_characters(new_numbers)
-    return new_numbers.split(delimiter)
+    return split_on_all_delimiters(new_numbers, delimiters)
+  end
+
+  def split_on_all_delimiters(new_numbers, delimiters, newer_numbers=[])
+    return newer_numbers if delimiters.length == 0
+    new_numbers = ensure_array(new_numbers)
+    delimiter = delimiters.pop
+    newer_numbers = split_on_delimiter(delimiter, new_numbers)
+    split_on_all_delimiters(newer_numbers.flatten, delimiters, newer_numbers)
+  end
+
+  def split_on_delimiter(delimiter, new_numbers)
+    new_numbers.collect { |number| number.split(delimiter) }.flatten
+  end
+
+  def ensure_array(new_numbers)
+    new_numbers = new_numbers.lines.to_a if new_numbers.is_a?(String)
+    new_numbers
   end
 
   def remove_delimiter_special_characters(new_numbers)
-    new_numbers.gsub('//[', '').gsub(']', '')
+    new_numbers.gsub('//[', '').gsub(']', '').gsub('[','')
+  end
+
+  def find_delimiters(new_numbers, delimiters=[])
+    newer_numbers = new_numbers
+    delimiter = find_delimiter(new_numbers)
+    newer_numbers = remove_delimiter(delimiter, newer_numbers)
+    delimiters << delimiter
+    return delimiters if !newer_numbers.include?('[')
+    find_delimiters(newer_numbers, delimiters)
+  end
+
+  def remove_delimiter(delimiter, newer_numbers)
+    newer_numbers.gsub('[' + delimiter + ']', '')
   end
 
   def find_delimiter(new_numbers)
@@ -50,8 +80,7 @@ class StringCalc
     delimiter_end_offset = -1
     delimiter_start_location = new_numbers.index('//[') + delimiter_start_offset
     delimiter_end_location = new_numbers.index(']') + delimiter_end_offset
-    delimiter = new_numbers[delimiter_start_location..delimiter_end_location]
-    return delimiter
+    new_numbers[delimiter_start_location..delimiter_end_location]
   end
 
   def remove_new_line(numbers)
