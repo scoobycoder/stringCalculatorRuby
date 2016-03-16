@@ -39,4 +39,8 @@ describe 'Be a Calculator' do
     expect(@calc.sum('//[*][%]\n1*2%3')).to eq(6)
   end
 
+  it 'Sum should allow for long multiple delimiters' do
+    expect(@calc.sum('//[***][%]\n1*2%3')).to eq(6)
+  end
+
 end
