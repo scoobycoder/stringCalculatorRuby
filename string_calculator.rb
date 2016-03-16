@@ -37,13 +37,20 @@ class StringCalc
   def split_with_delimiter(numbers)
     new_numbers = remove_new_line(numbers)
     delimiter = find_delimiter(new_numbers)
+    new_numbers = remove_delimiter_special_characters(new_numbers)
     return new_numbers.split(delimiter)
   end
 
+  def remove_delimiter_special_characters(new_numbers)
+    new_numbers.gsub('//[', '').gsub(']', '')
+  end
+
   def find_delimiter(new_numbers)
-    delimiter_offset = 2
-    delimiter_location = new_numbers.index('//') + delimiter_offset
-    delimiter = new_numbers[delimiter_location]
+    delimiter_start_offset = 3
+    delimiter_end_offset = -1
+    delimiter_start_location = new_numbers.index('//[') + delimiter_start_offset
+    delimiter_end_location = new_numbers.index(']') + delimiter_end_offset
+    delimiter = new_numbers[delimiter_start_location..delimiter_end_location]
     return delimiter
   end
 
