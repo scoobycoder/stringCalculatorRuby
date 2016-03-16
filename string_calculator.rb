@@ -36,22 +36,35 @@ class StringCalc
 
   def split_with_delimiter(numbers)
     new_numbers = remove_new_line(numbers)
-    delimiter = find_delimiter(new_numbers)
+    delimiters = find_delimiter(new_numbers)
     new_numbers = remove_delimiter_special_characters(new_numbers)
-    return new_numbers.split(delimiter)
+    return split_on_all_delimiters(new_numbers, delimiters)
+  end
+
+  def split_on_all_delimiters(new_numbers, delimiters, newer_numbers=[])
+    return newer_numbers if delimiters.length == 0
+    new_numbers = new_numbers.lines.to_a if new_numbers.is_a?(String)
+    delimiter = delimiters.pop
+    newer_numbers = new_numbers.collect {|number| number.split(delimiter)}.flatten
+    split_on_all_delimiters(newer_numbers.flatten, delimiters, newer_numbers)
   end
 
   def remove_delimiter_special_characters(new_numbers)
-    new_numbers.gsub('//[', '').gsub(']', '')
+    new_numbers.gsub('//[', '').gsub(']', '').gsub('[','')
   end
 
-  def find_delimiter(new_numbers)
+  def find_delimiter(new_numbers, delimiters=[])
+    newer_numbers = new_numbers
     delimiter_start_offset = 3
     delimiter_end_offset = -1
     delimiter_start_location = new_numbers.index('//[') + delimiter_start_offset
     delimiter_end_location = new_numbers.index(']') + delimiter_end_offset
     delimiter = new_numbers[delimiter_start_location..delimiter_end_location]
-    return delimiter
+    remove_delimiter = '[' + delimiter + ']'
+    newer_numbers = newer_numbers.gsub(remove_delimiter,'')
+    delimiters << delimiter
+    return delimiters if !newer_numbers.include?('[')
+    find_delimiter(newer_numbers, delimiters)
   end
 
   def remove_new_line(numbers)
