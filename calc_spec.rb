@@ -40,7 +40,7 @@ describe 'Be a Calculator' do
   end
 
   it 'Sum should allow for long multiple delimiters' do
-    expect(@calc.sum('//[***][%]\n1*2%3')).to eq(6)
+    expect(@calc.sum('//[***][%%]\n1***2%%3')).to eq(6)
   end
 
 end
